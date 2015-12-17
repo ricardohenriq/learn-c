@@ -1,0 +1,280 @@
+/*
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+&                                                            &
+&    ALUNO: WEINER SILVA            MATRICULA: 122293        &
+&                                                            &
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+# define maxl 10
+
+typedef struct
+{
+    int identidade;
+    char nome[40];
+    char sexo;
+    float altura;
+    int idade;
+    int prox;
+}Pessoa;
+
+
+typedef struct
+{
+    Pessoa Elem[maxl];
+    int prim, ult, dispo;
+}Lista;
+
+void criar (Lista * L)
+{
+    int i;
+    L->prim = -1;
+    L->ult = -1;
+    L->dispo = 0;
+    for (i=0; i<maxl; i++)
+    {
+        L->Elem[i].prox = i + 1;
+    }
+    L->Elem[i].prox = -1;
+    printf("\n\nLista vazia criada com sucesso!\n\n");
+    system("pause");
+}
+
+
+void inserir (Lista * L, Pessoa X)
+{
+    int i, p,a;
+   if (L->dispo == maxl-1)
+    {
+       printf("A lista está cheia!\n");
+       return;
+    }
+    else
+    {
+        i = L->dispo;
+        L->dispo = L->Elem[i].prox;
+        L->Elem[i] = X;
+        p = L->prim;
+        if (p==-1)
+        {
+            L->Elem[i].prox = L->prim;
+            L->prim = i;
+            L->ult = i;
+        }
+        else if (p == L->ult)
+            {
+                if(L->Elem[p].identidade < X.identidade)
+                {
+                    L->Elem[i].prox = L->Elem[p].prox;
+                    L->Elem[p].prox = i;
+                    L->ult = i;
+                }
+                else
+                {
+                    L->Elem[i].prox = p;
+                    L->prim = i;
+                }
+            }else
+            {
+                while ((p != -1) && (X.identidade > L->Elem[p].identidade))
+                {
+                    a = p;
+                    p = L->Elem[p].prox;
+                }
+                if (p == L->prim)
+                {
+                    L->Elem[i].prox = L->prim;
+                    L->prim = i;
+                }
+                else
+                {
+                    L->Elem[i].prox = p;
+                    L->Elem[a].prox = i;
+                    if (p== -1)
+                    {
+                        L->ult = i;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+
+void remover (Lista *L, Pessoa *X)
+{
+    int a, p;
+    if (L->prim == -1)
+    {
+        printf("A lista está vazia.\n");
+        return;
+    }else{
+            p = L->prim;
+            while ((p != -1) && (X->identidade > L->Elem[p].identidade))
+            {
+                a = p;
+                p = L->Elem[p].prox;
+            }
+            if ((p == -1) || (X->identidade != L->Elem[p].identidade))
+            {
+                printf("Elemento não encontrado!\n");
+                return;
+            }else{
+                    *X = L->Elem[p];
+                    if (L->prim == L->ult)
+                    {
+                        L->prim = -1;
+                        L->ult = -1;
+                        L->Elem[p].prox = L->dispo;
+                        L->dispo = p;
+                    }else{
+                        if(p == L->ult)
+                        {
+                            L->ult = a;
+                            L->Elem[a].prox = L->Elem[p].prox;
+                            L->Elem[p].prox = L->dispo;
+                            L->dispo = p;
+                        }
+                    else if (p == L->prim)
+                                {
+                                    L->prim = L->Elem[p].prox;
+                                    L->Elem[p].prox = L->dispo;
+                                    L->dispo = p;
+                                }else{
+                                        L->Elem[a].prox = L->Elem[p].prox;
+                                        L->Elem[p].prox = L->dispo;
+                                        L->dispo = p;
+                                    }
+
+                }
+                printf("\n Pessoa Removida...\n");
+                return;
+    }
+}
+}
+
+int consultar (Lista L, int identidade)
+{
+    int P, i=-1;
+    if (L.prim == -1)
+    {
+        printf("A lista está vazia!\n");
+        return;
+    }
+    else{
+        P = L.prim;
+        while ((P != -1) && (identidade > L.Elem[P].identidade))
+        {
+            P = L.Elem[P].prox;
+        }
+        if (identidade == L.Elem[P].identidade)
+        {
+            i = P;
+        }else {
+            printf ("Elemento não encontrado.\n ");
+            return;
+            }
+    }
+    return (mostra(L.Elem[i]));
+}
+
+ void mostra(Pessoa X){
+
+            printf("\nIdentidade: %d", X.identidade);
+            printf("\nNome: %s", X.nome);
+            printf("\nSexo: %c", X.sexo);
+            printf("\nAltura: %.2f", X.altura);
+            printf("\nIdade: %d", X.idade);
+            printf("\n--------------------------------------------------\n");
+
+
+        }
+
+void exibir(Lista L)
+{
+    int p;
+    if(L.prim == -1)
+    {
+        printf("A lista está sem elementos!\n");
+        return;
+    }
+    else{
+        p = L.prim;
+        while (p != -1)
+        {
+            mostra(L.Elem[p]);
+            p = L.Elem[p].prox;
+        }
+    }
+}
+
+int main()
+{
+    setlocale(LC_ALL,"");
+    Lista L;
+    Pessoa X;
+    int opcao, cod;
+    do{
+        system("cls");
+        printf ("********************LISTA ENCADEADA ESTÁTICA**************************\n");
+        printf("\n(1)-Criar Lista Vazia\n(2)-Inserir elemento\n(3)-Remover Elemento\n(4)-Visualizar Lista\n(5)-Consultar Elemento\n(0)-Sair\nEscolha a opcao: ");
+        scanf("%d*c", &opcao);
+        //system("cls");
+
+            switch (opcao)
+            {
+                case 1:
+                    system("cls");
+                    criar(&L);
+                    break;
+                case 2:
+                    system("cls");
+                    printf("=====================  Inserindo  ====================\n");
+                    printf("Identidade: ");
+                    scanf ("%d*c", &X.identidade);
+                    printf("Nome: ");
+                    scanf ("%s*c", &X.nome);
+                    printf("Sexo: ");
+                    scanf ("%s*c", &X.sexo);
+                    printf("Altura(utilize ponto para serapara metro de centimetro ex. 1.89): ");
+                    scanf ("%f*c", &X.altura);
+                    printf("Idade: ");
+                    scanf ("%d*c", &X.idade);
+                    inserir(&L, X);
+                break;
+                case 3:
+                    system("cls");
+                    printf("=====================  Removendo  ====================\n");
+                    printf("\nInforme a identidade para remover o elemento: ");
+                    scanf("%d", &X.identidade);
+                    remover (&L,&X);
+                    printf("\n\n");
+                    system("pause");
+                    break;
+                break;
+                case 4:
+                    system("cls");
+                    printf("=====================  Exibindo  ====================\n");
+                    exibir(L);
+                    system("pause");
+                break;
+                case 5:
+                    system("cls");
+                    printf("=====================  Consultando  ====================\n");
+                    printf("\nInforme a identidade para ser consultada: ");
+                    scanf("%d", &cod);
+                    consultar (L,cod);
+                    printf("\n\n");
+                    system("pause");
+                    break;
+            }
+
+    }while(opcao!=0);
+
+return 0;
+}
